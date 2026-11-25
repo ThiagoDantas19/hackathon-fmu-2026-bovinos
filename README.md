@@ -18,6 +18,16 @@ A balança sabe **quanto** o cliente colocou no prato. Não sabe **o quê**. Em 
 | **Limpeza de mesa** | cobrança verbal | cronômetro por mesa + ranking de prioridade |
 | **Qualidade e desperdício** | boca a boca | nota por item, resto, reposições de cuba por dia |
 
+## Clonar
+
+```powershell
+git clone https://github.com/ThiagoDantas19/hackathon-fmu-2026-bovinos
+cd hackathon-fmu-2026-bovinos
+.\run.ps1
+```
+
+O repositório tem ~350 KB: só código e documentos. Banco, fotos e áudios são gerados/ignorados localmente.
+
 ## Como rodar (2 comandos)
 
 ```powershell
