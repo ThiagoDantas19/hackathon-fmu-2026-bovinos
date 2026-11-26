@@ -1,0 +1,14 @@
+# Tema fixo do Streamlit: a demo não pode mudar de cara com o dark mode do SO.
+[theme]
+base = "light"
+primaryColor = "#8B1E2D"
+backgroundColor = "#FAF7F2"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#211B18"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

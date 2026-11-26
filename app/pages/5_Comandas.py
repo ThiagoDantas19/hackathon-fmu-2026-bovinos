@@ -15,13 +15,17 @@ import streamlit as st  # noqa: E402
 
 from ui import (  # noqa: E402
     brl,
+    cabecalho,
     garantir_dados,
     grade_kpis,
     link_pagina,
+    num,
     pct,
     rodape_dados_sinteticos,
+    secao,
     seletor_dia,
     setup,
+    vazio,
 )
 
 setup("Comandas")
@@ -32,11 +36,6 @@ from core.db import sessao  # noqa: E402
 
 garantir_dados()
 
-st.title("Comandas · a demonstração ponta a ponta")
-st.caption(
-    "O número da comanda é a chave única. Abertura → pesagem com foto → bebida → feedback → fechamento."
-)
-
 dia = seletor_dia("dia_comandas")
 
 with sessao() as s:
@@ -44,101 +43,132 @@ with sessao() as s:
     ind = servico.indicadores(s, dia)
     proxima = servico.proximo_numero(s)
 
+cabecalho(
+    "Demonstração",
+    "Comandas ponta a ponta",
+    "O número da comanda é a chave única: abertura → pesagem com foto → bebida → feedback → fechamento.",
+    [f"{ind['comandas']} comandas no dia", "recepção humanizada", "caixa intocado"],
+)
+
 grade_kpis(
     [
         (str(ind["comandas"]), "Comandas no dia", f"{ind['comandas_abertas']} abertas"),
-        (brl(ind["receita_total"]), "Receita", "prato + bebida"),
+        (brl(ind["receita_total"]), "Receita", "prato + bebida", "ok"),
         (pct(ind["cmv_pct"]), "CMV médio", "prato"),
         (brl(ind["ticket_medio"]), "Ticket médio", "por comanda"),
     ]
 )
 
-st.divider()
-
-col_esq, col_dir = st.columns([1.6, 1])
+st.write("")
+col_esq, col_dir = st.columns([1.7, 1], gap="large")
 
 with col_esq:
-    st.subheader("Comandas do dia")
+    secao("Comandas do dia", "Clique em uma linha para inspecionar na coluna ao lado.")
     if lista:
-        df = pd.DataFrame(lista)
+        df = pd.DataFrame(lista).rename(
+            columns={
+                "comanda": "comanda",
+                "hora": "hora",
+                "pessoas": "pessoas",
+                "pratos": "pratos",
+                "peso_g": "peso (g)",
+                "receita": "receita",
+                "cmv_pct": "CMV",
+                "nota": "nota",
+                "status": "status",
+            }
+        )
+        df["nota"] = df["nota"].map(
+            lambda v: "—" if v is None or pd.isna(v) else f"{float(v):.1f} ★"
+        )
         st.dataframe(
-            df.rename(
-                columns={
-                    "comanda": "comanda",
-                    "hora": "hora",
-                    "pessoas": "pessoas",
-                    "pratos": "pratos",
-                    "peso_g": "peso (g)",
-                    "receita": "receita (R$)",
-                    "cmv_pct": "CMV (%)",
-                    "nota": "nota",
-                    "status": "status",
-                }
-            ),
+            df,
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
             height=420,
+            column_config={
+                "peso (g)": st.column_config.NumberColumn("peso", format="%.0f g"),
+                "receita": st.column_config.NumberColumn("receita", format="R$ %.2f"),
+                "CMV": st.column_config.NumberColumn("CMV", format="%.1f%%"),
+                "nota": st.column_config.TextColumn("nota"),
+            },
         )
     else:
-        st.info("Nenhuma comanda neste dia.")
+        vazio("Nenhuma comanda neste dia", "Escolha outro dia na barra lateral.")
 
 with col_dir:
-    st.subheader("Abrir uma comanda")
-    opcoes = [c["comanda"] for c in lista]
-    if opcoes:
-        numero = st.selectbox(
-            "Número", opcoes, format_func=lambda n: f"{n} · {next(c['hora'] for c in lista if c['comanda'] == n)}"
-        )
-    else:
-        numero = st.text_input("Número", value=proxima)
+    secao("Abrir uma comanda")
+    with st.container(border=True):
+        opcoes = [c["comanda"] for c in lista]
+        if opcoes:
+            numero = st.selectbox(
+                "Número",
+                opcoes,
+                format_func=lambda n: (
+                    f"{n} · {next(c['hora'] for c in lista if c['comanda'] == n)}"
+                ),
+            )
+        else:
+            numero = st.text_input("Número", value=proxima)
 
-    if st.button("Nova comanda (simular abertura)", use_container_width=True):
-        with sessao() as s:
-            nova = servico.criar_comanda(s)
-        st.success(f"Comanda {nova} aberta na recepção humanizada.")
-        link_pagina("pages/1_Balanca.py", label="Pesar o prato desta comanda →")
-        st.stop()
+        if st.button("Nova comanda (simular abertura)", width="stretch"):
+            with sessao() as s:
+                nova = servico.criar_comanda(s)
+            st.success(f"Comanda {nova} aberta na recepção humanizada.")
+            link_pagina("pages/1_Balanca.py", label="Pesar o prato desta comanda →")
+            st.stop()
 
 with sessao() as s:
     resumo = servico.resumo_comanda(s, numero) if numero else None
 
 if not resumo:
-    st.warning("Comanda não encontrada.")
+    vazio("Comanda não encontrada", "Escolha outro número na lista.")
     st.stop()
 
-st.divider()
-st.markdown(f"## Comanda {resumo['numero']}")
-
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Pessoas", resumo["pessoas"])
-c2.metric("Aberta", resumo["aberta_em"].strftime("%H:%M"))
-c3.metric("Bebidas", brl(resumo["bebidas"]))
-c4.metric("Status", "fechada" if resumo["fechada_em"] else "aberta")
+st.write("")
+secao(
+    f"Comanda {resumo['numero']}",
+    "Tudo o que o sistema sabe sobre uma mesa — e por que isso só é possível com a comanda como chave.",
+)
 
 grade_kpis(
     [
-        (brl(resumo["totais"]["receita"]), "Receita da comanda", "prato + bebida"),
-        (brl(resumo["totais"]["custo"]), "Custo estimado", "tabela de custo/kg"),
-        (brl(resumo["totais"]["margem"]), "Margem", "receita − custo"),
-        (pct(resumo["totais"]["cmv_pct"]), "CMV da comanda", "inclui bebida a 30%"),
-    ]
+        (str(resumo["pessoas"]), "Pessoas", "na mesa"),
+        (resumo["aberta_em"].strftime("%H:%M"), "Aberta", "na recepção"),
+        (brl(resumo["bebidas"]), "Bebidas", "lançadas no caixa"),
+        ("fechada" if resumo["fechada_em"] else "aberta", "Status", "comanda"),
+    ],
+    colunas=4,
 )
 
+st.write("")
+grade_kpis(
+    [
+        (brl(resumo["totais"]["receita"]), "Receita da comanda", "prato + bebida", "ok"),
+        (brl(resumo["totais"]["custo"]), "Custo estimado", "tabela de custo/kg"),
+        (brl(resumo["totais"]["margem"]), "Margem", "receita − custo", "ok"),
+        (pct(resumo["totais"]["cmv_pct"]), "CMV da comanda", "inclui bebida a 30%"),
+    ],
+    colunas=4,
+)
+
+st.write("")
+
 if not resumo["pratos"]:
-    st.info("Esta comanda ainda não tem prato pesado. Vá em **Balança** para registrar.")
+    vazio("Esta comanda ainda não tem prato pesado", "Vá em Balança para registrar a pesagem.")
 
 for prato in resumo["pratos"]:
     with st.expander(
-        f"Prato das {prato['hora']} · {prato['peso_g']} g · CMV {prato['cmv_pct']:.1f}%",
+        f"Prato das {prato['hora']} · {prato['peso_g']} g · CMV {num(prato['cmv_pct'], 1)}%",
         expanded=True,
     ):
-        esq, dir_ = st.columns([1, 1.2])
+        esq, dir_ = st.columns([1, 1.3], gap="large")
         with esq:
             caminho = RAIZ / prato["foto_path"] if prato["foto_path"] else None
             if caminho and caminho.exists():
-                st.image(str(caminho), caption="Foto da balança", use_container_width=True)
+                st.image(str(caminho), caption="Foto da balança", width="stretch")
             else:
-                st.info("Foto não disponível (dados sintéticos do dia).")
+                vazio("Foto não disponível", "Dados sintéticos do dia não guardam imagem.")
             st.caption(f"Modelo: `{prato['modelo']}`")
         with dir_:
             grade_kpis(
@@ -147,42 +177,65 @@ for prato in resumo["pratos"]:
                     (brl(prato["custo"]), "Custo", "composição estimada"),
                     (brl(prato["margem"]), "Margem", "bruta"),
                     (pct(prato["mix_premium_pct"]), "Mix premium", "área do prato"),
-                ]
-            )
-            st.dataframe(
-                pd.DataFrame(prato["itens"]).assign(
-                    percentual=lambda d: (d["percentual"] * 100)
-                )[["rotulo", "categoria", "percentual", "peso_g", "custo"]].rename(
-                    columns={
-                        "rotulo": "item",
-                        "categoria": "categoria",
-                        "percentual": "área (%)",
-                        "peso_g": "peso (g)",
-                        "custo": "custo (R$)",
-                    }
-                ),
-                hide_index=True,
-                use_container_width=True,
+                ],
+                colunas=2,
             )
 
-st.divider()
-col_fb, col_vazio = st.columns([1.4, 1])
+        st.write("")
+        st.dataframe(
+            pd.DataFrame(prato["itens"])
+            .assign(percentual=lambda d: d["percentual"] * 100)
+            [["rotulo", "categoria", "percentual", "peso_g", "custo"]]
+            .rename(
+                columns={
+                    "rotulo": "item",
+                    "categoria": "categoria",
+                    "percentual": "área",
+                    "peso_g": "peso",
+                    "custo": "custo",
+                }
+            ),
+            hide_index=True,
+            width="stretch",
+            column_config={
+                "área": st.column_config.ProgressColumn(
+                    "área", min_value=0, max_value=100, format="%.1f%%"
+                ),
+                "peso": st.column_config.NumberColumn("peso", format="%.0f g"),
+                "custo": st.column_config.NumberColumn("custo", format="R$ %.2f"),
+            },
+        )
+
+st.write("")
+col_fb, col_vazio = st.columns([1.4, 1], gap="large")
 with col_fb:
-    st.subheader("Feedback vinculado")
+    secao("Feedback vinculado")
     if resumo["feedbacks"]:
-        st.dataframe(pd.DataFrame(resumo["feedbacks"]), hide_index=True, use_container_width=True)
-        link_pagina("pages/2_Feedback.py", label="Abrir o totem de feedback →")
+        st.dataframe(
+            pd.DataFrame(resumo["feedbacks"]).rename(
+                columns={
+                    "hora": "hora",
+                    "nota_geral": "nota geral",
+                    "item": "item",
+                    "nota_item": "nota do item",
+                    "resto": "resto",
+                    "canal": "canal",
+                }
+            ),
+            hide_index=True,
+            width="stretch",
+        )
     else:
-        st.info("Sem avaliação ainda. O totem/QR grava direto nesta comanda.")
-        link_pagina("pages/2_Feedback.py", label="Abrir o totem de feedback →")
+        vazio("Sem avaliação ainda", "O totem/QR grava direto nesta comanda.")
+    link_pagina("pages/2_Feedback.py", label="Abrir o totem de feedback →")
 
 with col_vazio:
-    st.subheader("Por que isso importa")
+    secao("Por que isso importa")
     st.markdown(
         """
-- A comanda liga **quanto o cliente pagou** a **o que ele comeu**.
-- Com o feedback, a comanda também liga **o que ele achou**.
-- É o único lugar do sistema em que mix, CMV, margem e satisfação aparecem juntos.
+- A comanda liga **quanto o cliente pagou** ao **que ele comeu**.
+- Com o feedback, liga também **o que ele achou**.
+- É o único lugar em que mix, CMV, margem e satisfação aparecem juntos.
         """
     )
 

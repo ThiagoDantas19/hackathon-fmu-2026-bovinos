@@ -162,6 +162,42 @@ def _ja_populado(s, dia: date | None = None) -> bool:
     return (s.scalar(consulta) or 0) > 0
 
 
+def reancorar_mesas(s, limite_min: float = 25.0, alvo_max: float = 18.0) -> bool:
+    """Mantém o "ao vivo" plausível quando o app fica aberto por horas.
+
+    Os carimbos das mesas são gravados uma vez no seed. Sem reancorar, uma demo
+    aberta desde cedo mostraria "mesa suja há 392 min". Aqui os tempos são
+    comprimidos proporcionalmente para no máximo 18 min — preserva a ordem
+    relativa (quem está suja há mais tempo continua primeiro) e nunca gera
+    tempo negativo.
+    """
+    mesas = list(s.scalars(select(Mesa)))
+    agora = datetime.now()
+    idades = [
+        (agora - carimbo).total_seconds() / 60
+        for mesa in mesas
+        if (carimbo := (mesa.livre_desde or mesa.ocupada_desde)) is not None
+    ]
+    if not idades:
+        return False
+    maior = max(idades)
+    if maior <= limite_min and min(idades) >= 0:
+        return False
+
+    fator = alvo_max / maior if maior > 0 else 1.0
+    for mesa in mesas:
+        for campo in ("livre_desde", "ocupada_desde"):
+            carimbo = getattr(mesa, campo)
+            if carimbo is None:
+                continue
+            idade = (agora - carimbo).total_seconds() / 60
+            # Carimbo no futuro (dado antigo de demo longa) vira "agora mesmo".
+            nova = 0.5 if idade < 0 else min(alvo_max, idade * fator)
+            setattr(mesa, campo, agora - timedelta(minutes=nova))
+    s.commit()
+    return True
+
+
 def popular(force: bool = False) -> bool:
     """Cria 3 dias de dados. Idempotente. Retorna True se inseriu algo."""
     with sessao() as s:
@@ -169,6 +205,7 @@ def popular(force: bool = False) -> bool:
         # O seed é sempre relativo a hoje: se o banco tem dados de dias anteriores
         # (ex.: demo aberta de um dia para o outro), refaz a janela de 3 dias.
         if not force and _ja_populado(s) and _ja_populado(s, hoje):
+            reancorar_mesas(s)
             return False
         if force or _ja_populado(s):
             for modelo in (PesagemItem, Pesagem, Feedback, Comanda, Mesa, EventoFila, ReposicaoCuba):

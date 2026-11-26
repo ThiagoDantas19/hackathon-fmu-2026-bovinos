@@ -158,7 +158,8 @@ Lei de Little, que transforma fila em tempo: `W = L / λ`. Com 8,6 chegadas/min 
 ## Estrutura
 
 ```
-app/                  # Streamlit (5 páginas) + ui.py
+app/                  # Streamlit: roteador (main.py) + visao_geral.py + 5 páginas em pages/
+  ui.py               # design system: CSS, cabeçalho, KPIs, cartões, gráficos
 core/                 # domínio, sem dependência de UI
   cmv.py              # motor de custo e margem
   vision/             # VLM (gemini/openai) + heurística OpenCV + pipeline

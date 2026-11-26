@@ -82,14 +82,14 @@ def _desenhar_prato(caminho: Path, mix: dict[str, float], seed: int, tamanho: in
     from PIL import Image, ImageDraw, ImageFilter
 
     rng = random.Random(seed)
-    img = Image.new("RGB", (tamanho, tamanho), (58, 54, 52))
+    img = Image.new("RGB", (tamanho, tamanho), (214, 205, 194))
     draw = ImageDraw.Draw(img)
 
     cx = cy = tamanho // 2
     raio = int(tamanho * 0.46)
     # Sombra e louça
     draw.ellipse(
-        [cx - raio - 8, cy - raio - 6, cx + raio + 8, cy + raio + 14], fill=(40, 38, 37)
+        [cx - raio - 8, cy - raio - 6, cx + raio + 8, cy + raio + 14], fill=(178, 168, 156)
     )
     draw.ellipse([cx - raio, cy - raio, cx + raio, cy + raio], fill=(238, 236, 231))
     draw.ellipse(
