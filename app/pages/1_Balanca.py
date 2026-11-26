@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import pathlib
 import sys
 
@@ -50,6 +51,16 @@ with col_esq:
     )
     balanca = st.selectbox("Balança", ["B1", "B2", "B3"])
 
+    automatico = st.toggle(
+        "Modo balança automática",
+        value=True,
+        key="b_auto",
+        help=(
+            "Na balança real a foto dispara quando o peso fica estável por 300 ms. "
+            "Aqui o upload ou a seleção do prato simula esse gatilho: nenhum clique em analisar."
+        ),
+    )
+
     origem = st.radio(
         "Origem da foto", ["Enviar arquivo", "Câmera", "Prato de demonstração"],
         horizontal=True,
@@ -72,13 +83,33 @@ with col_esq:
     if foto_bytes:
         st.image(foto_bytes, caption="Foto que será analisada", use_container_width=True)
 
-    analisar = st.button("Analisar prato", type="primary", use_container_width=True)
+    if automatico:
+        st.caption("🟢 Aguardando prato — a análise dispara sozinha, como na balança real.")
+        analisar = False
+    else:
+        analisar = st.button("Analisar prato", type="primary", use_container_width=True)
 
-if analisar:
+assinatura = None
+if foto_bytes and comanda:
+    assinatura = f"{hashlib.sha1(foto_bytes).hexdigest()[:12]}:{int(peso_g)}:{comanda}"
+
+disparo_automatico = (
+    automatico
+    and assinatura is not None
+    and st.session_state.get("b_assinatura") != assinatura
+)
+
+if analisar or disparo_automatico:
     if not foto_bytes:
         st.warning("Selecione ou capture uma foto do prato.")
     else:
-        with st.spinner("Analisando composição do prato…"):
+        st.session_state["b_assinatura"] = assinatura
+        aviso = (
+            "Peso estável — capturando a foto e analisando…"
+            if disparo_automatico
+            else "Analisando composição do prato…"
+        )
+        with st.spinner(aviso):
             st.session_state["b_analise"] = analisar_bytes(foto_bytes, float(peso_g))
             st.session_state["b_foto"] = foto_bytes
             st.session_state["b_peso"] = float(peso_g)
@@ -114,6 +145,11 @@ with col_dir:
             f"Modelo: `{res['modelo']}` · confiança {res['confianca_global']:.2f} · "
             f"{res['latencia_ms']} ms · status {status}"
         )
+        if automatico:
+            st.caption(
+                "⏱ Disparo automático: peso estabilizado → foto → análise. "
+                "O operador só entra se a confiança ficar abaixo de 0,55."
+            )
 
         grade_kpis(
             [
@@ -212,7 +248,12 @@ for col, prato in zip(colunas, pratos, strict=False):
         st.markdown(f"**{prato['titulo']}** · {prato['peso_g']} g")
         st.caption(prato["descricao"])
         st.metric("CMV esperado", pct(prato["cmv"]["cmv_pct"], 1))
-        if st.button("Analisar com IA", key=f"demo_{prato['nome']}", use_container_width=True):
+        if automatico:
+            detectado = analisar_bytes(
+                prato["caminho"].read_bytes(), prato["peso_g"], provider="heuristica"
+            )
+            st.metric("CMV detectado", pct(detectado["cmv"]["cmv_pct"], 1))
+        elif st.button("Analisar com IA", key=f"demo_{prato['nome']}", use_container_width=True):
             resultado = analisar_bytes(prato["caminho"].read_bytes(), prato["peso_g"], provider="heuristica")
             st.metric("CMV detectado", pct(resultado["cmv"]["cmv_pct"], 1))
 

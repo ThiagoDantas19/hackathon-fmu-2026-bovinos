@@ -22,9 +22,25 @@ def _por_label(at, label: str):
     return None
 
 
-def test_balanca_analisa_prato_de_demonstracao() -> None:
+def test_balanca_analisa_automaticamente() -> None:
+    """Modo balança (padrão): selecionar o prato já dispara a análise, sem clique."""
     at = _app("app/pages/1_Balanca.py")
     at.run()
+    at.radio[0].set_value("Prato de demonstração")
+    at.run()
+
+    assert not at.exception, at.exception
+    analise = at.session_state["b_analise"]
+    assert analise is not None
+    assert analise["cmv"]["cmv_pct"] > 0
+    assert len(analise["itens"]) >= 2
+    assert _por_label(at, "Analisar prato") is None
+
+
+def test_balanca_modo_manual_mantem_botao() -> None:
+    at = _app("app/pages/1_Balanca.py")
+    at.run()
+    at.toggle[0].set_value(False)
     at.radio[0].set_value("Prato de demonstração")
     at.run()
 
@@ -33,10 +49,7 @@ def test_balanca_analisa_prato_de_demonstracao() -> None:
     botao.click().run()
 
     assert not at.exception, at.exception
-    analise = at.session_state["b_analise"]
-    assert analise is not None
-    assert analise["cmv"]["cmv_pct"] > 0
-    assert len(analise["itens"]) >= 2
+    assert at.session_state["b_analise"] is not None
 
 
 def test_feedback_registra_nota() -> None:

@@ -154,22 +154,28 @@ def _curva(minuto_do_dia: float, centro: float = 785.0, largura: float = 34.0) -
     return math.exp(-((minuto_do_dia - centro) ** 2) / (2 * largura**2))
 
 
-def _ja_populado(s) -> bool:
-    return (s.scalar(select(func.count()).select_from(Comanda)) or 0) > 0
+def _ja_populado(s, dia: date | None = None) -> bool:
+    consulta = select(func.count()).select_from(Comanda)
+    if dia is not None:
+        inicio = datetime.combine(dia, time(0))
+        consulta = consulta.where(Comanda.aberta_em >= inicio)
+    return (s.scalar(consulta) or 0) > 0
 
 
 def popular(force: bool = False) -> bool:
     """Cria 3 dias de dados. Idempotente. Retorna True se inseriu algo."""
     with sessao() as s:
-        if _ja_populado(s) and not force:
+        hoje = date.today()
+        # O seed é sempre relativo a hoje: se o banco tem dados de dias anteriores
+        # (ex.: demo aberta de um dia para o outro), refaz a janela de 3 dias.
+        if not force and _ja_populado(s) and _ja_populado(s, hoje):
             return False
-        if force:
+        if force or _ja_populado(s):
             for modelo in (PesagemItem, Pesagem, Feedback, Comanda, Mesa, EventoFila, ReposicaoCuba):
                 s.query(modelo).delete()
             s.flush()
 
         rng = random.Random(RNG_SEED)
-        hoje = date.today()
         dias = [hoje - timedelta(days=2), hoje - timedelta(days=1), hoje]
         agora = datetime.now()
 

@@ -24,13 +24,19 @@ from core import servico  # noqa: E402
 from core.db import init_db, sessao  # noqa: E402
 from core.models import CategoriaCusto, Comanda, EventoFila  # noqa: E402
 from core.seed import popular  # noqa: E402
-from core.vision import analisar_bytes, persistir_pesagem, salvar_foto  # noqa: E402
+from core.vision import (  # noqa: E402
+    analisar_bytes,
+    limpar_fotos_antigas,
+    persistir_pesagem,
+    salvar_foto,
+)
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     init_db()
     popular(force=False)
+    limpar_fotos_antigas()  # retenção LGPD: fotos de prato com mais de 7 dias
     yield
 
 

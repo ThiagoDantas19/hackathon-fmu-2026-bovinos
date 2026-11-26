@@ -182,7 +182,7 @@ Regras de robustez embutidas:
 | **Entrada** | ROI por mesa (subconjunto visível do salão) + botão "higienizada" no celular |
 | **Estado** | `ocupada` → (sem pessoa por 30 s) → `livre` → (toque do garçom) → `limpa`; mede-se `livre → limpa` |
 | **Alerta** | `MESA_SUJA` após 3 min, ranqueado por (tempo, nº de lugares, nível) — prioriza mesa grande no salão principal |
-| **Valor** | 100 mesas no pico × 5 lugares × 2 min economizados ≈ 1.000 lugares-minuto ≈ **~27 clientes** adicionais no pico ≈ **R$ 1,7 mil/dia** (premissas explícitas) |
+| **Valor** | 90 mesas no pico × 5 lugares × 2 min economizados ≈ 900 lugares-minuto ≈ **~24 clientes** adicionais no pico ≈ **~R$ 1,6 mil/dia** (premissas explícitas) |
 
 > Como o restaurante tem 4 metros e 7–8 garçons experientes, o ganho não vem de "cobrar mais rápido", e sim de **priorizar a mesa certa** e **provar o gargalo com número**.
 
@@ -374,7 +374,7 @@ como roadmap. Nunca cortar o CMV: é a dor nº 1 do cliente.
 |---|---|---|
 | Mix premium | 1 p.p. de mix a R$61/kg de diferença, prato de 550 g, 600 pratos/dia | **~R$ 205/dia** (~R$4,5 mil/mês) |
 | Fila/desistência | 3% dos ~420 clientes do pico desistem; ticket R$80 | **~R$ 1,0 mil/dia** |
-| Giro de mesa | 100 mesas no pico; 2 min a menos de latência; 5 lugares; dwell 37 min; ticket R$65 | **~R$ 1,7 mil/dia** |
+| Giro de mesa | 90 mesas no pico (450 lugares); 2 min a menos de latência; dwell 37 min; ticket R$65 | **~R$ 1,6 mil/dia** |
 | Desperdício | 5% de redução no resto com base em aceitação por item | depende do volume — apresentar como faixa |
 
 Somar tudo é tentador, mas a banca premia quem **separa o que é medido do que é projetado**. Apresentar como "faixa de oportunidade identificada", não como retorno garantido — foi o próprio cliente que disse: *"não é uma promessa de retorno desse investimento"*.

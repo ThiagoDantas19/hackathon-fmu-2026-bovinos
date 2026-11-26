@@ -41,6 +41,32 @@ def _chave(foto_bytes: bytes, peso_g: float, provider: str) -> str:
     return f"{digest}:{int(peso_g)}:{provider}"
 
 
+def limpar_fotos_antigas(dias: int | None = None) -> int:
+    """Apaga fotos de prato mais antigas que a política de retenção (LGPD).
+
+    O prazo padrão vem de ``RETENCAO_DIAS`` (7 dias). Devolve quantas fotos foram
+    removidas e nunca levanta exceção: uma falha de limpeza não pode derrubar a demo.
+    """
+    prazo = dias if dias is not None else settings.retencao_dias
+    limite = prazo * 86400
+    agora = time.time()
+    removidas = 0
+    try:
+        for caminho in FOTOS_DIR.glob("*"):
+            if not caminho.is_file():
+                continue
+            if agora - caminho.stat().st_mtime > limite:
+                caminho.unlink(missing_ok=True)
+                removidas += 1
+    except OSError as exc:  # noqa: BLE001 - limpeza é best-effort
+        log.warning("Falha na limpeza de fotos antigas: %s", exc)
+        return removidas
+
+    if removidas:
+        log.info("Retenção LGPD: %s foto(s) com mais de %s dia(s) removida(s)", removidas, prazo)
+    return removidas
+
+
 def analisar_bytes(
     foto_bytes: bytes,
     peso_g: float,

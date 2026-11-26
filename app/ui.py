@@ -83,10 +83,12 @@ def garantir_dados() -> bool:
     from core.db import init_db
     from core.demo import gerar_todas
     from core.seed import popular
+    from core.vision import limpar_fotos_antigas
 
     init_db()
     popular(force=False)
     gerar_todas()
+    limpar_fotos_antigas()  # retenção LGPD: fotos de prato com mais de 7 dias
     return True
 
 

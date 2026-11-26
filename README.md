@@ -144,7 +144,7 @@ humanizada e o caixa continuam exatamente como estão.
 |---|---|---|
 | 1 p.p. de mix premium | R$ 61/kg de diferença × 0,55 kg × 600 pratos | **~R$ 205/dia** |
 | Fila na escada | 3% de 420 clientes do pico × ticket R$ 80 | **~R$ 1,0 mil/dia** |
-| 2 min a menos de mesa suja | 100 mesas × 5 lugares × 2 min ÷ 37 min de permanência | **~27 clientes/dia** |
+| 2 min a menos de mesa suja | 90 mesas × 5 lugares × 2 min ÷ 37 min de permanência | **~24 clientes/dia** |
 | Hardware | 3 câmeras USB + suportes + iluminação | **R$ 1.320 – 2.820** |
 
 Tudo é **oportunidade estimada**, com premissas explícitas — não retorno garantido. O próprio
@@ -222,7 +222,7 @@ Contrato do prato:
 - Câmera da balança é **top-down no prato**, sem captura de rosto.
 - Câmeras de salão são usadas apenas para **contagem agregada de pessoas**, sem
   reconhecimento facial e sem identificação individual.
-- Fotos de prato: retenção curta (7 dias no modo produção) e armazenamento em 640 px WebP.
+- Fotos de prato: retenção de 7 dias com **limpeza automática** (`RETENCAO_DIAS`) e armazenamento em 640 px WebP.
 - Feedback é anônimo, vinculado apenas ao número da comanda.
 
 ---

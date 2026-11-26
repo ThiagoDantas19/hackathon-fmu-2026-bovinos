@@ -49,7 +49,7 @@ Cena mesas (12 s): planta com mesas mudando de cor, cronômetro subindo, alerta 
 Tela: diagrama de arquitetura animado em 6 segundos, destacando "PaaS" vs. "SaaS existente".
 
 ### 2:30–2:50 · Impacto
-> "Cada ponto percentual de mix premium é 200 reais por dia. Dois minutos a menos de mesa no pico são 27 clientes a mais. E o investimento em hardware é de 1.300 a 2.800 reais — três câmeras e três suportes."
+> "Cada ponto percentual de mix premium é 200 reais por dia. Dois minutos a menos de mesa no pico são 24 clientes a mais. E o investimento em hardware é de 1.300 a 2.800 reais — três câmeras, uma por balança."
 
 > ⚠️ Dizer "oportunidade estimada", nunca "retorno garantido".
 

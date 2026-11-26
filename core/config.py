@@ -40,6 +40,9 @@ class Settings:
 
         self.seed_comandas_por_dia: int = int(os.getenv("SEED_COMANDAS_POR_DIA", "180"))
 
+        # LGPD: fotos de prato são apagadas automaticamente depois deste prazo.
+        self.retencao_dias: int = int(os.getenv("RETENCAO_DIAS", "7"))
+
     @property
     def tem_vlm(self) -> bool:
         return bool(self.gemini_api_key or self.openai_api_key)
