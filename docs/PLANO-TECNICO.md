@@ -1,4 +1,4 @@
-# Plano Técnico — Sistema de Inteligência Operacional Bovinos Grill & Beer
+# Plano Técnico — Sistema de Inteligência Operacional Bovinu's Grill & Beer
 
 > Hackathon FMU 2026 · Unidade Augusta · Entrega **quinta 26/11 às 12h00**
 > Documento irmão: [`ACHADOS-DA-PALESTRA.md`](./ACHADOS-DA-PALESTRA.md) (fatos e números ditos pelo cliente)

@@ -35,7 +35,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="Bovinos · Inteligência Operacional",
+    title="Bovinu's · Inteligência Operacional",
     description=(
         "Camada PaaS não invasiva sobre o sistema de comandas. "
         "A chave única de rastreamento é o número da comanda."
@@ -75,7 +75,7 @@ class EventoComanda(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "servico": "bovinos-inteligencia", "versao": "0.1.0"}
+    return {"status": "ok", "servico": "bovinus-inteligencia", "versao": "0.1.0"}
 
 
 @app.get("/api/v1/indicadores")

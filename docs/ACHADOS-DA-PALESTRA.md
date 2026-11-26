@@ -1,6 +1,6 @@
-# Achados da palestra (Bovinos Grill & Beer — Augusta)
+# Achados da palestra (Bovinu's Grill & Beer — Augusta)
 
-> Fonte: `transcricoes/palestra-hackathon-fmu.txt` (abertura + ~1h de Q&A com Luísa e Gabriel, diretoria do Grupo Bovinos).
+> Fonte: `transcricoes/palestra-hackathon-fmu.txt` (abertura + ~1h de Q&A com Luísa e Gabriel, diretoria do Grupo Bovinu's).
 > Objetivo: separar **fato dito pelo cliente** de **suposição nossa**. O que está aqui é o que vale para o pitch.
 
 ---

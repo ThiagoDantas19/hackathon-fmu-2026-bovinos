@@ -1,1 +1,1 @@
-"""Camada de inteligência operacional do Bovinos Grill & Beer."""
+"""Camada de inteligência operacional do Bovinu's Grill & Beer."""

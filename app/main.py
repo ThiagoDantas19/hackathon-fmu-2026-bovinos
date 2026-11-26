@@ -22,7 +22,7 @@ from core.db import sessao  # noqa: E402
 garantir_dados()
 
 hero(
-    "Inteligência Operacional · Bovinos Grill & Beer",
+    "Inteligência Operacional · Bovinu's Grill & Beer",
     "A camada que transforma o que a operação vê em número: mix do prato, CMV, filas, "
     "mesas e satisfação — tudo ligado pelo número da comanda.",
 )

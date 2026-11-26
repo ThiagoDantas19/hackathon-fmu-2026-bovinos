@@ -1,6 +1,6 @@
-# Bovinos · Inteligência Operacional
+# Bovinu's · Inteligência Operacional
 
-> Camada PaaS não invasiva sobre o sistema de comandas do **Bovinos Grill & Beer** (Rua Augusta, SP).
+> Camada PaaS não invasiva sobre o sistema de comandas do **Bovinu's Grill & Beer** (Rua Augusta, SP).
 > Hackathon FMU 2026 · entrega 26/11 às 12h.
 
 **[▶ Vídeo de 3 minutos]** *(link publicado até 26/11, 12h)* · [Plano técnico](docs/PLANO-TECNICO.md) · [Achados da palestra](docs/ACHADOS-DA-PALESTRA.md) · [Planta de câmeras](docs/CAMERAS.md) · [Integração](docs/INTEGRACAO.md) · [Roteiro do vídeo](docs/ROTEIRO-VIDEO.md)

@@ -69,7 +69,7 @@ h1 { font-weight: 800; }
 
 def setup(titulo: str, layout: str = "wide") -> None:
     st.set_page_config(
-        page_title=f"{titulo} · Bovinos",
+        page_title=f"{titulo} · Bovinu's",
         page_icon="🍖",
         layout=layout,
         initial_sidebar_state="expanded",

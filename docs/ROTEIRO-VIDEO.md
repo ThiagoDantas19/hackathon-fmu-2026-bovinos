@@ -1,4 +1,4 @@
-# Roteiro do vídeo (≤ 3 min) — Bovinos · Inteligência Operacional
+# Roteiro do vídeo (≤ 3 min) — Bovinu's · Inteligência Operacional
 
 **Regra de ouro:** o vídeo é a única coisa que a banca vê antes de decidir os 20 finalistas. Ele precisa provar que funciona, não explicar que funcionaria.
 
@@ -16,7 +16,7 @@
 Tela: foto de um prato + overlay de segmentação aparecendo item por item + números surgindo (R$ 32 → R$ 65 → margem).
 
 ### 0:15–0:40 · O problema, com os números deles
-> "O Bovinos da Augusta serve 600 pessoas por dia, 119 reais o quilo, e tem 70 minutos de pico. Eles sabem o peso do prato. Não sabem se foram 600 gramas de picanha ou de arroz. Não sabem o tempo de fila na churrasqueira. Não sabem quanto tempo uma mesa fica suja. E o cliente executivo tem 40 minutos para almoçar."
+> "O Bovinu's da Augusta serve 600 pessoas por dia, 119 reais o quilo, e tem 70 minutos de pico. Eles sabem o peso do prato. Não sabem se foram 600 gramas de picanha ou de arroz. Não sabem o tempo de fila na churrasqueira. Não sabem quanto tempo uma mesa fica suja. E o cliente executivo tem 40 minutos para almoçar."
 
 Tela: 4 cards das dores com os números (4 min de fila vs. 2,5 de meta · 90 mesas · 450 lugares · R$119/kg).
 
@@ -54,7 +54,7 @@ Tela: diagrama de arquitetura animado em 6 segundos, destacando "PaaS" vs. "SaaS
 > ⚠️ Dizer "oportunidade estimada", nunca "retorno garantido".
 
 ### 2:50–3:00 · Fecho
-> "Bovinos: vocês já têm os clientes, as câmeras e as balanças. Falta só transformar o que vocês veem em número."
+> "Bovinu's: vocês já têm os clientes, as câmeras e as balanças. Falta só transformar o que vocês veem em número."
 Tela final: nome do projeto + "github.com/…" + as 4 dores resolvidas em uma linha cada.
 
 ---
@@ -66,7 +66,7 @@ Tela final: nome do projeto + "github.com/…" + as 4 dores resolvidas em uma li
 - [ ] Dados de demo com nomes plausíveis (comanda 0421, picanha, lasanha) — nada de "teste1"
 - [ ] Rodar o fluxo real pelo menos uma vez na gravação (não só slides)
 - [ ] Cortar tempos de espera de API — acelerar 2–4× no corte
-- [ ] Legendas revisadas (nomes: Bovinos, Augusta, CMV, Little)
+- [ ] Legendas revisadas (nomes: Bovinu's, Augusta, CMV, Little)
 - [ ] Backup: se a IA falhar ao vivo, usar o prato pré-analisado **sem mencionar** que é cache
 - [ ] Exportar em 1080p, ≤ 100 MB, upload como "não listado"
 - [ ] Link do vídeo no README **e** no topo do repositório
